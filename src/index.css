@@ -1,0 +1,884 @@
+@import 'tailwindcss';
+@import '@fontsource-variable/saira/wdth.css';
+
+/*
+  Design tokens. One typeface (Saira, variable width + weight):
+  condensed widths carry numerals and headings, normal width carries reading text.
+  Status colours own all the saturation; the periwinkle accent stays quiet and
+  is reserved for selection and for anything about the link to Earth.
+*/
+@theme {
+  --font-sans: 'Saira Variable', ui-sans-serif, system-ui, sans-serif;
+
+  /*
+    "Orbital glass": surfaces are translucent so the starfield behind the app
+    stays faintly visible. `deck` is the one opaque surface, for anything that
+    floats above other content (KOMEK chat, toasts).
+  */
+  --color-void: #050914;
+  --color-deck: #0c1428;
+  --color-hull: rgb(11 18 38 / 0.74);
+  --color-panel: rgb(140 170 255 / 0.075);
+  --color-raised: rgb(124 196 255 / 0.17);
+  --color-line: rgb(160 188 255 / 0.22);
+  --color-line-soft: rgb(160 188 255 / 0.12);
+
+  --color-star: #eaf0fb;
+  --color-dim: #9eacc8;
+  --color-faint: #71809f;
+
+  --color-link: #7cc4ff;
+  --color-link-deep: #123a66;
+
+  --color-ok: #3ddc97;
+  --color-ok-deep: #0f3d2c;
+  --color-caution: #ffb020;
+  --color-caution-deep: #4a3306;
+  --color-alert: #ff4d5e;
+  --color-alert-deep: #521821;
+
+  --radius-control: 12px;
+  --radius-panel: 16px;
+}
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    margin: 0;
+    background: var(--color-void);
+    color: var(--color-star);
+    font-family: var(--font-sans);
+    font-size: 17px;
+    line-height: 1.45;
+    font-stretch: 100%;
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+    overscroll-behavior: none;
+  }
+
+  input,
+  textarea {
+    caret-color: var(--color-star);
+  }
+
+  button {
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--color-link);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+
+  ::selection {
+    background: var(--color-link-deep);
+  }
+}
+
+@layer components {
+  /* Condensed numerals: every reading on screen uses this. */
+  .num {
+    font-stretch: 72%;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums lining-nums;
+    letter-spacing: -0.01em;
+    line-height: 1;
+  }
+
+  .heading {
+    font-stretch: 80%;
+    font-weight: 600;
+    letter-spacing: 0.005em;
+    line-height: 1.1;
+  }
+
+  .label {
+    font-stretch: 88%;
+    font-weight: 500;
+    color: var(--color-dim);
+    font-size: 0.82rem;
+    letter-spacing: 0.02em;
+  }
+
+  .panel {
+    background: linear-gradient(180deg, rgb(150 180 255 / 0.085), rgb(150 180 255 / 0.035)), var(--color-hull);
+    border: 1px solid var(--color-line-soft);
+    border-radius: var(--radius-panel);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.06),
+      0 18px 40px -24px rgb(0 0 0 / 0.7);
+  }
+
+  /* Cards that can be tapped rise a little under the finger. */
+  .lift {
+    transition:
+      transform 180ms cubic-bezier(0.2, 0.8, 0.3, 1),
+      border-color 180ms ease,
+      background 180ms ease,
+      box-shadow 180ms ease;
+  }
+  .lift:hover {
+    transform: translateY(-2px);
+    border-color: var(--color-line);
+  }
+  .lift:active {
+    transform: translateY(0) scale(0.99);
+  }
+
+  /* Selected card: accent edge and a soft glow. */
+  .selected {
+    background: linear-gradient(180deg, rgb(124 196 255 / 0.2), rgb(124 196 255 / 0.08));
+    border-color: rgb(124 196 255 / 0.6);
+    box-shadow:
+      0 0 0 1px rgb(124 196 255 / 0.18),
+      0 10px 34px -12px rgb(124 196 255 / 0.45);
+  }
+
+  /* Minimum 56px touch targets: gloved hands, microgravity. */
+  .tap {
+    min-height: 56px;
+    min-width: 56px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    padding: 0 1.25rem;
+    border-radius: var(--radius-control);
+    border: 1px solid var(--color-line);
+    background: var(--color-panel);
+    font-stretch: 88%;
+    font-weight: 600;
+    transition:
+      background 120ms ease,
+      border-color 120ms ease,
+      transform 80ms ease;
+  }
+  .tap:hover {
+    background: var(--color-raised);
+  }
+  .tap:active {
+    transform: scale(0.98);
+  }
+  .tap-primary {
+    background: var(--color-star);
+    border-color: var(--color-star);
+    color: #0a1024;
+    box-shadow: 0 8px 28px -10px rgb(124 196 255 / 0.55);
+  }
+  .tap-primary:hover {
+    background: #ffffff;
+    box-shadow: 0 10px 34px -8px rgb(124 196 255 / 0.75);
+  }
+  .tap-alert {
+    background: var(--color-alert);
+    border-color: var(--color-alert);
+    color: #1a0308;
+  }
+  .tap-alert:hover {
+    background: #ff6b79;
+  }
+  /* The SOS button breathes a ring of light so it is found without reading. */
+  .sos-beacon {
+    animation: sos-beacon 2.4s ease-out infinite;
+  }
+
+  /* Screen and section entrances ----------------------------------------- */
+  .view-enter {
+    animation: view-enter 380ms cubic-bezier(0.2, 0.8, 0.3, 1) backwards;
+  }
+  .app-enter {
+    animation: app-enter 700ms cubic-bezier(0.2, 0.8, 0.3, 1) backwards;
+  }
+  .stagger > * {
+    animation: rise-in 460ms cubic-bezier(0.2, 0.8, 0.3, 1) backwards;
+  }
+  .stagger > :nth-child(1) { animation-delay: 60ms; }
+  .stagger > :nth-child(2) { animation-delay: 120ms; }
+  .stagger > :nth-child(3) { animation-delay: 180ms; }
+  .stagger > :nth-child(4) { animation-delay: 240ms; }
+  .stagger > :nth-child(5) { animation-delay: 300ms; }
+  .stagger > :nth-child(6) { animation-delay: 360ms; }
+  .stagger > :nth-child(7) { animation-delay: 420ms; }
+  .stagger > :nth-child(8) { animation-delay: 480ms; }
+  .stagger > :nth-child(n + 9) { animation-delay: 540ms; }
+
+  /* Navigation: the current section carries an accent bar. */
+  .nav-item {
+    position: relative;
+    transition:
+      background 160ms ease,
+      color 160ms ease;
+  }
+  .nav-item::before {
+    content: '';
+    position: absolute;
+    left: -8px;
+    top: 50%;
+    width: 4px;
+    height: 0;
+    border-radius: 0 4px 4px 0;
+    background: var(--color-link);
+    box-shadow: 0 0 14px var(--color-link);
+    transform: translateY(-50%);
+    transition: height 260ms cubic-bezier(0.2, 0.8, 0.3, 1);
+  }
+  .nav-item[aria-current='page']::before {
+    height: 34px;
+  }
+  .nav-item svg {
+    transition: transform 200ms cubic-bezier(0.2, 0.8, 0.3, 1);
+  }
+  .nav-item:hover svg {
+    transform: translateY(-2px);
+  }
+
+  /* Simulated pulse trace under the body map. */
+  .pulse-strip {
+    mask-image: linear-gradient(90deg, transparent, #000 12%, #000 82%, transparent);
+  }
+  .pulse-run {
+    animation: pulse-run 0.8s linear infinite;
+    will-change: transform;
+  }
+
+  /* A changed score lands with a short settle, so the eye catches the recalculation. */
+  .score-pop {
+    animation: score-pop 420ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .cpr-beat {
+    animation: cpr-beat 420ms cubic-bezier(0.2, 0.8, 0.3, 1) both;
+  }
+  .cpr-breath {
+    animation: cpr-breath 2.5s ease-in-out infinite;
+  }
+
+  .komek-toast {
+    animation: rise-in 260ms ease-out both;
+  }
+
+  .scroll-quiet {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-line) transparent;
+  }
+}
+
+/* KOMEK, the pixel assistant ------------------------------------------ */
+.komek-sprite {
+  display: block;
+  image-rendering: pixelated;
+}
+.komek-eye-shut {
+  opacity: 0;
+  animation: komek-blink-shut 4.2s steps(1) infinite;
+}
+.komek-eye-open {
+  animation: komek-blink-open 4.2s steps(1) infinite;
+}
+.komek-hatch {
+  display: block;
+}
+.komek-window {
+  position: absolute;
+  inset: 0 0 6px 0;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+}
+.komek-ledge {
+  position: absolute;
+  left: 2px;
+  right: 2px;
+  bottom: 0;
+  height: 6px;
+  background: var(--color-line);
+  box-shadow: 0 -2px 0 var(--color-raised);
+}
+.komek-rise {
+  display: block;
+}
+/* Idle: only the eye shows above the ledge, with a slow look-around. */
+.komek-rise-idle {
+  animation: komek-lurk 5s steps(1) infinite;
+}
+/* Something to say: climb out in a few chunky steps, then bob. */
+.komek-rise-notice {
+  animation:
+    komek-climb 520ms steps(5) both,
+    komek-bob 1.2s steps(2) 600ms infinite;
+}
+/* Warning: jump out and shake. */
+.komek-rise-alert {
+  animation:
+    komek-climb 300ms steps(4) both,
+    komek-shake 360ms steps(2) 320ms infinite;
+}
+
+@keyframes komek-blink-shut {
+  0%,
+  93% {
+    opacity: 0;
+  }
+  94%,
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes komek-blink-open {
+  0%,
+  93% {
+    opacity: 1;
+  }
+  94%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes komek-lurk {
+  0%,
+  100% {
+    transform: translateY(30px);
+  }
+  40% {
+    transform: translateY(26px);
+  }
+  55% {
+    transform: translate(-3px, 26px);
+  }
+  70% {
+    transform: translate(3px, 26px);
+  }
+  85% {
+    transform: translateY(30px);
+  }
+}
+@keyframes komek-climb {
+  from {
+    transform: translateY(40px);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+@keyframes komek-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+@keyframes komek-shake {
+  0%,
+  100% {
+    transform: translate(-3px, -2px);
+  }
+  50% {
+    transform: translate(3px, -4px);
+  }
+}
+
+/* Body map ------------------------------------------------------------- */
+.zone {
+  cursor: pointer;
+  outline: none;
+}
+.zone > path,
+.zone > circle,
+.zone > g > path,
+.zone > g > circle {
+  fill: color-mix(in srgb, var(--z) 16%, transparent);
+  stroke: var(--z);
+  stroke-width: 1.6;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  transition:
+    fill 500ms ease,
+    stroke 500ms ease;
+}
+.zone .zone-detail {
+  fill: none;
+  stroke-width: 1.3;
+  opacity: 0.7;
+}
+.zone .zone-dot,
+.zone .zone-solid {
+  fill: color-mix(in srgb, var(--z) 55%, transparent);
+}
+.zone .zone-bone {
+  fill: none;
+  stroke-width: 7;
+  opacity: 0.75;
+}
+.zone .zone-hit > * {
+  fill: transparent;
+  stroke: none;
+}
+.zone:hover > path,
+.zone:hover > g > path {
+  fill: color-mix(in srgb, var(--z) 30%, transparent);
+}
+.zone-caution,
+.zone-alert {
+  filter: drop-shadow(0 0 7px color-mix(in srgb, var(--z) 70%, transparent));
+}
+.zone-alert {
+  animation: zone-pulse 1.1s ease-in-out infinite;
+}
+.zone-outline > path,
+.zone-outline > ellipse {
+  fill: none;
+  stroke: color-mix(in srgb, var(--z) 62%, var(--color-star));
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  transition: stroke 500ms ease;
+}
+.zone-outline.zone-ok > path,
+.zone-outline.zone-ok > ellipse {
+  stroke: color-mix(in srgb, var(--z) 38%, var(--color-dim));
+}
+.zone-outline > path {
+  vector-effect: non-scaling-stroke;
+}
+/* A sweep of light when a crew member is shown, then again every few seconds. */
+.body-scan {
+  pointer-events: none;
+  opacity: 0;
+  animation: body-scan 7s cubic-bezier(0.4, 0, 0.3, 1) 250ms infinite both;
+}
+.body-glow {
+  pointer-events: none;
+  animation: glow-breathe 6s ease-in-out infinite;
+}
+.ring-spin {
+  transform-box: view-box;
+  transform-origin: 368px 372px;
+  animation: ring-spin 140s linear infinite;
+}
+.ring-orbit {
+  transform-box: view-box;
+  transform-origin: 368px 372px;
+  animation: ring-spin 46s linear infinite;
+}
+.chip-in {
+  animation: chip-in 520ms cubic-bezier(0.2, 0.8, 0.3, 1) backwards;
+}
+.leader {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: draw-in 700ms ease-out forwards;
+}
+
+/* Score ring */
+.ring-value {
+  transition:
+    stroke-dasharray 700ms cubic-bezier(0.2, 0.8, 0.3, 1),
+    stroke 400ms ease;
+}
+.ring-dot {
+  transition:
+    cx 700ms cubic-bezier(0.2, 0.8, 0.3, 1),
+    cy 700ms cubic-bezier(0.2, 0.8, 0.3, 1),
+    stroke 400ms ease;
+}
+
+/* Title screen ----------------------------------------------------------- */
+.intro-word {
+  display: inline-block;
+  animation: word-in 720ms cubic-bezier(0.2, 0.8, 0.3, 1) backwards;
+}
+.intro-fade {
+  animation: rise-in 800ms cubic-bezier(0.2, 0.8, 0.3, 1) backwards;
+}
+.intro-scene {
+  animation: scene-in 1600ms cubic-bezier(0.2, 0.8, 0.3, 1) backwards;
+}
+.intro-leave {
+  animation: intro-leave 560ms cubic-bezier(0.5, 0, 0.8, 0.4) forwards;
+  pointer-events: none;
+}
+.intro-cta {
+  animation:
+    rise-in 800ms cubic-bezier(0.2, 0.8, 0.3, 1) backwards,
+    cta-glow 2.8s ease-in-out 1.6s infinite;
+}
+.planet-float {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: planet-float 9s ease-in-out infinite;
+}
+.ship-ping {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: ship-ping 2.6s ease-out infinite;
+}
+.nebula {
+  animation: nebula-drift 48s ease-in-out infinite alternate;
+  will-change: transform;
+}
+.body-detail {
+  pointer-events: none;
+}
+.body-detail path {
+  fill: none;
+  stroke: var(--color-star);
+  stroke-width: 1.1;
+  stroke-linecap: round;
+  opacity: 0.13;
+}
+.body-detail circle {
+  fill: var(--color-star);
+  opacity: 0.2;
+}
+.draw {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: draw-in 1.5s cubic-bezier(0.3, 0, 0.2, 1) 120ms forwards;
+}
+.env-ring {
+  fill: none;
+  stroke: var(--z);
+  stroke-width: 1.4;
+  opacity: 0.32;
+  transition: stroke 500ms ease;
+}
+.env-ring-dashed {
+  stroke-dasharray: 3 9;
+  stroke-linecap: round;
+  opacity: 0.5;
+}
+.beat {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: beat 1s ease-in-out infinite;
+}
+.breathe {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: breathe 4s ease-in-out infinite;
+}
+.chip {
+  cursor: pointer;
+}
+.chip rect {
+  fill: rgb(16 25 52 / 0.88);
+  stroke: var(--color-line);
+  stroke-width: 1.2;
+  transition:
+    fill 160ms ease,
+    stroke 300ms ease;
+}
+.chip-caution rect,
+.chip-alert rect {
+  stroke: var(--z);
+  fill: color-mix(in srgb, var(--z) 13%, #0e162e);
+  filter: drop-shadow(0 0 8px color-mix(in srgb, var(--z) 45%, transparent));
+}
+.chip-alert rect {
+  stroke-width: 2;
+}
+.chip:hover rect {
+  fill: #1c2c56;
+  stroke: var(--color-link);
+}
+.chip:focus-visible {
+  outline: none;
+}
+.chip:focus-visible rect {
+  stroke: var(--color-link);
+  stroke-width: 3;
+}
+.chip-title {
+  font-size: 20px;
+  font-weight: 600;
+  font-stretch: 76%;
+  fill: var(--color-star);
+}
+.chip-value {
+  font-size: 16.5px;
+  font-weight: 500;
+  font-stretch: 78%;
+  fill: var(--color-dim);
+  font-variant-numeric: tabular-nums;
+}
+.chip-caution .chip-value,
+.chip-alert .chip-value {
+  fill: var(--z);
+}
+
+@keyframes cpr-beat {
+  0% {
+    transform: scale(0.82);
+  }
+  35% {
+    transform: scale(1.04);
+  }
+  100% {
+    transform: scale(0.94);
+  }
+}
+
+@keyframes cpr-breath {
+  0%,
+  100% {
+    transform: scale(0.9);
+  }
+  50% {
+    transform: scale(1.03);
+  }
+}
+
+@keyframes score-pop {
+  from {
+    transform: scale(1.35);
+    opacity: 0.4;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+@keyframes body-scan {
+  0% {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  3% {
+    opacity: 1;
+  }
+  20% {
+    opacity: 1;
+  }
+  23%,
+  100% {
+    transform: translateY(700px);
+    opacity: 0;
+  }
+}
+
+@keyframes glow-breathe {
+  0%,
+  100% {
+    opacity: 0.75;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes ring-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes chip-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes view-enter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes app-enter {
+  from {
+    opacity: 0;
+    transform: scale(1.03);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes sos-beacon {
+  0% {
+    box-shadow: 0 0 0 0 rgb(255 77 94 / 0.55);
+  }
+  70%,
+  100% {
+    box-shadow: 0 0 0 14px rgb(255 77 94 / 0);
+  }
+}
+
+@keyframes pulse-run {
+  to {
+    transform: translateX(-120px);
+  }
+}
+
+@keyframes word-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.45em);
+    filter: blur(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
+@keyframes scene-in {
+  from {
+    opacity: 0;
+    transform: scale(1.08);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes intro-leave {
+  to {
+    opacity: 0;
+    transform: scale(1.12);
+    filter: blur(6px);
+  }
+}
+
+@keyframes cta-glow {
+  0%,
+  100% {
+    box-shadow: 0 8px 28px -10px rgb(124 196 255 / 0.55);
+  }
+  50% {
+    box-shadow:
+      0 0 0 6px rgb(124 196 255 / 0.14),
+      0 10px 44px -6px rgb(124 196 255 / 0.9);
+  }
+}
+
+@keyframes planet-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes ship-ping {
+  0% {
+    transform: scale(0.4);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+
+@keyframes nebula-drift {
+  from {
+    transform: translate3d(-2%, -1.5%, 0) scale(1);
+  }
+  to {
+    transform: translate3d(2%, 2%, 0) scale(1.08);
+  }
+}
+
+@keyframes draw-in {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes beat {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  14% {
+    transform: scale(1.13);
+  }
+  30% {
+    transform: scale(1);
+  }
+  42% {
+    transform: scale(1.07);
+  }
+  58% {
+    transform: scale(1);
+  }
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  45% {
+    transform: scale(1.045);
+  }
+}
+
+@keyframes zone-pulse {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes link-travel {
+  from {
+    offset-distance: 0%;
+  }
+  to {
+    offset-distance: 100%;
+  }
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

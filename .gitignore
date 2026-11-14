@@ -1,0 +1,16 @@
+node_modules
+dist
+.env
+.env.*
+.DS_Store
+.claude
+
+# Internal team notes (not part of the English-only submission)
+CONTEXT.md
+RESEARCH.md
+
+# Handoff archives
+*.zip
+
+# Local working notes for the coding assistant
+CLAUDE.md
