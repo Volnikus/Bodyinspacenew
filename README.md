@@ -5,7 +5,7 @@
 A tablet health monitor for deep-space crews, built for the NASA Space Apps Challenge 2026 challenge
 *Create Health Monitoring Software for Astronauts on Space Missions*.
 
-Live demo: https://tuka2308.github.io/body-in-space/ (add `?fresh=1` to start from the untouched demo state)
+Live demo: https://body-in-space.vercel.app/ (add `?fresh=1` to start from the untouched demo state)
 
 > Educational prototype. Not a medical device. Vital signs are simulated.
 

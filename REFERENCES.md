@@ -53,7 +53,7 @@
 | Vitest | Unit tests | MIT |
 | Saira typeface (Omnibus-Type), via @fontsource-variable/saira | Font, self-hosted | SIL Open Font License 1.1 |
 
-Hosting: GitHub Pages. No analytics, no backend, no user accounts.
+Hosting: Vercel. No analytics, no backend, no user accounts.
 
 ## Graphics and icons
 

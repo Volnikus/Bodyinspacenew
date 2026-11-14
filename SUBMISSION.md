@@ -16,7 +16,7 @@ Halfway to Mars, a medical question takes 14 minutes to reach Earth and the earl
 
 ## Link to final project
 
-https://tuka2308.github.io/body-in-space/
+https://body-in-space.vercel.app/
 Source code: https://github.com/Tuka2308/body-in-space
 
 ## Detailed project description
@@ -36,7 +36,7 @@ Source code: https://github.com/Tuka2308/body-in-space
 
 **Honest limits.** Vital signs are simulated because open NASA data has none; lab data and space weather are real. No physician has reviewed the content; it is an educational prototype, not a medical device.
 
-**Tools.** TypeScript, React, Vite, Tailwind CSS, Zustand, Vitest, Web Audio and Web Speech APIs, GitHub Pages. No backend: everything works offline in the browser.
+**Tools.** TypeScript, React, Vite, Tailwind CSS, Zustand, Vitest, Web Audio and Web Speech APIs, Vercel. No backend: everything works offline in the browser.
 
 ## NASA data
 

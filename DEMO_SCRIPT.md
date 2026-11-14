@@ -6,7 +6,7 @@ Total length 29 seconds. Keep it under 30: the rules reject longer videos.
 ## Before you record
 
 1. Use one browser tab only. Window size 1920×1080 (or 1280×800), browser zoom 100%, bookmarks bar hidden.
-2. Open `https://tuka2308.github.io/body-in-space/?fresh=1` — this always starts from the same state:
+2. Open `https://body-in-space.vercel.app/?fresh=1` — this always starts from the same state:
    Mars transit, day 90, Daniyar Seitkali selected, heart rate 24% above his normal.
 3. The app opens on its title screen ("Halfway to Mars. Earth's answer is 29 minutes away."). Record it for a few seconds, then press **Open the crew dashboard** (or Enter) and wait 3 seconds for KOMEK's message to appear in the corner.
 4. Rehearse the clicks twice. The metronome makes sound: record system audio or leave the clip silent, both are fine.
